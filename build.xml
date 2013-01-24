@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="moee_zfskeleton" default="build">
+    
+    <property name="config.file.db" value="config/autoload/database.local.php" />
+
+    <!-- ============================================  -->
+    <!-- Target: setup                                 -->
+    <!-- ============================================  -->
+    <target name="setup">
+        <property name="db.mysql.host" value="localhost" />
+        <property name="db.mysql.dbname" value="" />
+        <property name="db.mysql.username" value="" />
+        <echo msg="Setting up" />
+        <echo msg="MySQL Setup" />
+        <input propertyname="db.mysql.host" promptChar=" >">mysql hostname</input>
+        <input propertyname="db.mysql.dbname" promptChar=" >">mysql db name</input>
+        <input propertyname="db.mysql.username" promptChar=" >">mysql user</input>
+        
+        <!-- from http://stackoverflow.com/questions/4907398/find-replace-text-in-file-with-phing -->
+        <copy file="${config.file.db}.dist" tofile="${config.file.db}" overwrite="true">
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="dbname" value="${db.mysql.dbname}" />
+                    <token key="dbhost" value="${db.mysql.host}" />
+                    <token key="dbuser" value="${db.mysql.username}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <!-- until phing supports masked inputs, the password has to be entered manually -->
+        <echo level="warn" msg="Important! Open the file ${config.file.db} and enter your password." />
+
+    </target>
+
+    <!-- ============================================  -->
+    <!-- Target: build                                 -->
+    <!-- ============================================  -->
+    <target name="build">
+    </target>
+
+</project>

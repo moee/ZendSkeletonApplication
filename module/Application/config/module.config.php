@@ -55,6 +55,7 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+            'Navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory'
         ),
     ),
     'translator' => array(
@@ -88,4 +89,20 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
+    'navigation' => array(
+        'default' => array(
+            array(
+                'label' => 'Home',
+                'route' => 'home',
+            ),
+        ),
+        'login' => array(
+            'default' => array(
+                array(
+                    'label' => 'Login',
+                    'route' => 'login'
+                )
+            )
+        )
+    )
 );

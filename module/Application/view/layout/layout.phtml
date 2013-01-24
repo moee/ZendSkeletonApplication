@@ -29,9 +29,31 @@
                         <span class="icon-bar"></span>
                     </a>
                     <a class="brand" href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Skeleton Application') ?></a>
+
+                    <!-- Log In Drop Down -->
+                    <!-- http://mifsud.me/adding-dropdown-login-form-bootstraps-navbar/ -->
                     <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
+                        <?php echo $this->navigation()->menu()->renderMenu('navigation', array('ulClass' => 'nav')); ?>
+                        <ul class="nav pull-right">
+                          <?php if ($this->zfcUserIdentity()) : ?>
+                          <li>
+                            <a href="/user">
+                            <?php echo sprintf($this->translate('Signed in as %s'), $this->escapeHtml($this->zfcUserDisplayName())) ?>
+                            </a>
+                            </li>
+                            <li>
+                                <a href="/user/logout"><?php echo $this->translate('Log out'); ?></a>
+                            </li>
+                          <?php else :?>
+                              <li><a href="/user/register"><?php echo $this->translate('Register') ?></a></li>
+                              <li class="divider-vertical"></li>
+                              <li class="dropdown">
+                                 <a class="dropdown-toggle" href="#" data-toggle="dropdown"><?php echo $this->translate('Sign In') ?><strong class="caret"></strong></a>
+                                 <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+                                 <?php echo $this->zFcUserLoginWidget(); ?>
+                                </div>
+                              </li>
+                          <?php endif; ?>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
