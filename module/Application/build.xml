@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="moee_zfskeleton_application" default="build">
+   
+    <property name="base.path" value="." />
+    <resolvepath propertyName="base.path.absolute" file="${base.path}"/>
+
+    <import file="${base.path.absolute}/../../build.xml"/>
+ 
+    <property name="src.path" value="${base.path.absolute}/src" />
+    <property name="test.path" value="${base.path.absolute}/test" />
+
+    <property name="build.path" value="${base.path.absolute}/docs" />
+    <property name="build.path.phpdoc2" value="${build.path}/phpdoc2" />
+    <property name="build.path.phpdepend" value="${build.path}/phpdepend" />
+    <property name="build.path.phpcodesniffer" value="${build.path}/phpcodesniffer" />
+    <property name="build.path.phpunit" value="${build.path}/phpunit" />
+
+    <!-- ============================================  -->
+    <!-- Target: build                                 -->
+    <!-- ============================================  -->
+    <target name="build" depends="clean,phpdoc2,phpdepend">
+    </target>
+    
+    <target name="phpunit">
+        <mkdir dir="${build.path.phpunit}" />
+        <phpunit configuration="${test.path}/phpunit.xml" printsummary="true">
+            <batchtest>
+                <fileset dir="${test.path}">
+                    <include name="**/*Test.php"/>
+                </fileset>
+             </batchtest>
+            <formatter todir="${build.path.phpunit}" type="xml"/>
+        </phpunit>
+    </target>
+</project>

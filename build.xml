@@ -2,6 +2,14 @@
 <project name="moee_zfskeleton" default="build">
     
     <property name="config.file.db" value="config/autoload/database.local.php" />
+    
+    <property name="src.path" value="./module" />
+
+    <property name="build.path" value="./build" />
+    <property name="build.path.phpdoc2" value="${build.path}/phpdoc2" />
+    <property name="build.path.phpdepend" value="${build.path}/phpdepend" />
+    <property name="build.path.phpcodesniffer" value="${build.path}/phpcodesniffer" />
+    <property name="build.path.phpunit" value="${build.path}/phpunit" />
 
     <!-- ============================================  -->
     <!-- Target: setup                                 -->
@@ -35,7 +43,71 @@
     <!-- ============================================  -->
     <!-- Target: build                                 -->
     <!-- ============================================  -->
-    <target name="build">
+    <target name="build" depends="clean,phpdoc2,phpdepend,phpunit">
+    </target>
+    
+    <target name="clean">
+        <delete dir="${build.path}" includeemptydirs="true" verbose="false" failonerror="true" />
+    </target>
+ 
+    <target name="phpdoc2">
+        <mkdir dir="${build.path.phpdoc2}" />
+        <phpdoc2 title="API Documentation"
+            destdir="${build.path.phpdoc2}"
+            template="responsive">
+            <fileset dir="${src.path}">
+                <include name="**/*.php" />
+            </fileset>
+        </phpdoc2>
+    </target>
+    
+    <target name="phpdepend">
+        <mkdir dir="${build.path.phpdepend}" />
+        <phpdepend>
+            <fileset dir="${src.path}">
+                <include name="**/*.php" />
+            </fileset>
+            <logger type="jdepend-xml" outfile="${build.path.phpdepend}/jdepend.xml"/>
+            <logger type="jdepend-chart" outfile="${build.path.phpdepend}/jdepend-chart.png"/>
+            <logger type="overview-pyramid" outfile="${build.path.phpdepend}/overview-pyramid.png"/>
+            <logger type="phpunit-xml" outfile="${build.path.phpdepend}/phpunit.xml"/>
+            <logger type="summary-xml" outfile="${build.path.phpdepend}/summary.xml"/>
+            <analyzer type="coderank-mode" value="method"/>
+        </phpdepend>
+    </target>
+    
+    <target name="phpcodesniffer">
+        <mkdir dir="${build.path.phpcodesniffer}" />
+        <phpcodesniffer standard="Zend" showSniffs="true" showWarnings="true">
+            <fileset dir="${src.path}">
+                <include name="**/*.php"/>
+            </fileset>
+            <formatter type="default" usefile="false"/>
+            <formatter type="checkstyle" outfile="${build.path.phpcodesniffer}/checkstyle.xml"/>
+        </phpcodesniffer>
+    </target>
+    
+    <!-- ============================================  -->
+    <!-- Target: phpunit                               -->
+    <!-- Calls all phpunit tasks in submodules via     -->
+    <!-- the phpunit_external task                     -->
+    <!-- ============================================  -->
+    <target name="phpunit">
+        <foreach param="dirname" absparam="buildfile" target="phpunit_external">
+            <fileset dir="${src.path}">
+                 <patternset>
+                      <include name="*/build.xml"/>
+                  </patternset>
+                <type type="file" />
+            </fileset>
+        </foreach>
     </target>
 
+    <!-- ============================================  -->
+    <!-- Target: phpunit_external                      -->
+    <!-- Calls a phpunit task in a submodule           -->
+    <!-- ============================================  -->
+    <target name="phpunit_external">
+        <phing phingfile="${buildfile}" inheritAll="false" inheritRefs="true" target="phpunit" />
+    </target>
 </project>
