@@ -10,6 +10,8 @@
     <property name="build.path.phpdepend" value="${build.path}/phpdepend" />
     <property name="build.path.phpcodesniffer" value="${build.path}/phpcodesniffer" />
     <property name="build.path.phpunit" value="${build.path}/phpunit" />
+    <property name="build.path.phpcpd" value="${build.path}/phpcpd" />
+    <property name="build.path.phploc" value="${build.path}/phploc" />
 
     <!-- ============================================  -->
     <!-- Target: setup                                 -->
@@ -43,7 +45,7 @@
     <!-- ============================================  -->
     <!-- Target: build                                 -->
     <!-- ============================================  -->
-    <target name="build" depends="clean,phpdoc2,phpdepend,phpunit">
+    <target name="build" depends="clean,phpdoc2,phpdepend,phpcpd,phpunit">
     </target>
     
     <target name="clean">
@@ -110,4 +112,32 @@
     <target name="phpunit_external">
         <phing phingfile="${buildfile}" inheritAll="false" inheritRefs="true" target="phpunit" />
     </target>
+
+    <!-- ============================================  -->
+    <!-- Target: phpcpd                                -->
+    <!-- ============================================  -->
+    <target name="phpcpd">
+        <mkdir dir="${build.path.phpcpd}" />
+        <phpcpd file="${src.path}">
+            <formatter type="pmd" outfile="${build.path.phpcpd}/pmd-cpd.xml"/>
+        </phpcpd>
+    </target>
+    
+    <!-- ============================================  -->
+    <!-- Target: phploc                                -->
+    <!-- ============================================  -->
+    <target name="phploc">
+        <mkdir dir="${build.path.phploc}" />
+            <tstamp>
+                <format property="check.date.time" pattern="%Y%m%d-%H%M%S" locale="en_US"/>
+            </tstamp>
+            <phploc reportType="csv" reportName="${check.date.time}-report"
+                reportDirectory="${build.path.phploc}">
+                <fileset dir="${src.path}">
+                    <include name="**/*.php" />
+                    <include name="*.php" />
+                </fileset>
+            </phploc>
+    </target>
+
 </project>
